@@ -28,7 +28,7 @@ describe(cleanNumbers.name, () => {
 
         expect(result).toBeTypeOf("object");
         expect(result[0]).toBeTypeOf("number");
-        expect(result).toStrictEqual([1, 2]);
+        expect(result).toEqual([1, 2]);
     });
 
     it("should throw an error if the provided array contains at least one empty string", () => {

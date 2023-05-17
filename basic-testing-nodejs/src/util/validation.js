@@ -1,13 +1,17 @@
 function validateStringNotEmpty(value) {
-  if (value.trim().length === 0) {
-    throw new Error('Invalid input - must not be empty.');
-  }
+    if (typeof value !== "string") {
+        throw new Error("Invalid input - must be of type string.");
+    }
+
+    if (value.trim().length === 0) {
+        throw new Error("Invalid input - must not be empty.");
+    }
 }
 
 function validateNumber(number) {
-  if (isNaN(number)) {
-    throw new Error('Invalid number input.');
-  }
+    if (typeof number !== "number" || isNaN(number)) {
+        throw new Error("Invalid number input.");
+    }
 }
 
 exports.validateNumber = validateNumber;

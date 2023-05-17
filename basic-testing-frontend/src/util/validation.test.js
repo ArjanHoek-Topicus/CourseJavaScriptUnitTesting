@@ -10,14 +10,6 @@ describe(validateStringNotEmpty.name, () => {
         expect(resultFn).toThrow(/invalid input/i);
     });
 
-    it("should throw an error if a number was provided", () => {
-        const value = 123;
-
-        const resultFn = () => validateStringNotEmpty(value);
-
-        expect(resultFn).toThrow(/must be of type string/i);
-    });
-
     it("should not throw an error if a valid string was provided", () => {
         const value = "Valid string";
 

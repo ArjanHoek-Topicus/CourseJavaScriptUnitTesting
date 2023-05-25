@@ -1,28 +1,30 @@
 import { describe, it, expect, vi } from "vitest";
 import { sendDataRequest } from "./http";
+import { HttpError } from "./errors";
 
 const testResponseData = {
     testKey: "testData",
 };
 
-const fetchMock = vi.fn((_, options) => {
-    return new Promise((resolve, rej) => {
-        if (typeof options.body !== "string") {
-            return rej("Not a string.");
-        }
+const testResponse = {
+    ok: true,
+    json() {
+        return new Promise((res) => {
+            res(testResponseData);
+        });
+    },
+};
 
-        const testResponse = {
-            ok: true,
-            json() {
-                return new Promise((res) => {
-                    res(testResponseData);
-                });
-            },
-        };
+const fetchMock = vi.fn(
+    (_, options) =>
+        new Promise((resolve, rej) => {
+            if (typeof options.body !== "string") {
+                return rej("Not a string.");
+            }
 
-        resolve(testResponse);
-    });
-});
+            resolve(testResponse);
+        })
+);
 
 vi.stubGlobal("fetch", fetchMock);
 
@@ -44,5 +46,17 @@ describe(sendDataRequest.name, () => {
         }
 
         expect(errorMessage).not.toBe("Not a string.");
+    });
+
+    it("should throw an HttpError in case of non-ok responses", () => {
+        fetchMock.mockImplementationOnce(
+            () =>
+                new Promise((resolve) =>
+                    resolve({ ...testResponse, ok: false })
+                )
+        );
+
+        const testData = { key: "test" };
+        expect(sendDataRequest(testData)).rejects.toBeInstanceOf(HttpError);
     });
 });
